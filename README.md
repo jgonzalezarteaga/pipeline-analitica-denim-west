@@ -68,6 +68,8 @@ Tres páginas — capturas en `dashboard/`:
 | Análisis de producto y pedidos | Ticket promedio, estados de pago, ventas por método de envío y por día de la semana, top SKUs |
 | Comparativas temporales | ROAS en el tiempo, ventas y gasto agregados por mes |
 
+![Demo del dashboard](dashboard/demo-dashboard.gif)
+
 **Resultado de negocio:** el modelo confirma un ROAS de **7,52x** en el período analizado (90 días) — por cada peso invertido en publicidad, el retorno en ventas fue más de 7 veces esa inversión. Los montos absolutos de facturación y gasto se mantienen fuera de este repositorio por acuerdo con la marca; el código y la metodología completa sí son 100% reales y verificables.
 
 ## Cómo correrlo
