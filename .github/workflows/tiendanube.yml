@@ -1,0 +1,30 @@
+name: Tiendanube Pipeline
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  extraer-pedidos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Crear archivo de credenciales de Google Cloud
+        run: echo '${{ secrets.GCP_CREDENTIALS_JSON }}' > gcp-credentials.json
+
+      - name: Correr el script
+        env:
+          TIENDANUBE_ACCESS_TOKEN: ${{ secrets.TIENDANUBE_ACCESS_TOKEN }}
+          TIENDANUBE_STORE_ID: ${{ secrets.TIENDANUBE_STORE_ID }}
+        run: python tiendanube_extraccion.py

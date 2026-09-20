@@ -1,0 +1,27 @@
+name: Extraccion Google Ads via GA4
+
+on:
+  schedule:
+    - cron: '15 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  extraer-google-ads:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Crear archivo de credenciales de Google Cloud
+        run: echo '${{ secrets.GCP_CREDENTIALS_JSON }}' > gcp-credentials.json
+
+      - name: Correr el script
+        run: python google_ads_ga4_extraccion.py
