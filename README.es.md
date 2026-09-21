@@ -28,17 +28,17 @@ flowchart LR
 
 ## Las tres fuentes, y por qué cada una se resolvió distinto
 
-### 1. Tiendanube (ventas) — ✅ 100% automatizado
+### 1. Tiendanube (ventas) —  100% automatizado
 
 Trae los pedidos de los últimos 90 días vía API, con paginación, y carga a BigQuery todos los días sin intervención manual. La parte más interesante no es el script en sí, sino el registro de la app: Tiendanube ofrece dos caminos ("Aplicaciones a medida" y OAuth estándar) y el primero no estaba disponible en el plan de la tienda — hubo que resolver el flujo OAuth completo a mano, intercambiando el código de autorización por un token permanente vía `curl` en PowerShell.
 
-### 2. Google Ads — ✅ 100% automatizado (pero no por el camino obvio)
+### 2. Google Ads —  100% automatizado (pero no por el camino obvio)
 
 **Intento inicial:** conectar directo a la API de Google Ads. Se armó todo el flujo de OAuth (developer token, client id/secret, refresh token) y, ya con el código funcionando, apareció el problema: la cuenta Manager a la que apuntaba estaba **dada de baja**. La cuenta activa real tenía un ID distinto.
 
 **Solución real:** en vez de perseguir el arreglo de esa cuenta, se aprovechó que la property de GA4 ya tenía el vínculo de importación de costos con Google Ads activado. La API de datos de GA4 expone las mismas métricas (costo, clics, impresiones) sin pasar por ninguno de los problemas de la cuenta Manager. El script descartado se conservó en el repo (`scripts/google_ads_extraccion.py`) como registro de esa decisión.
 
-### 3. Meta Ads — ⚠️ la única fuente manual, y por una razón real
+### 3. Meta Ads —  la única fuente manual, y por una razón real
 
 Se probaron 4 vías distintas de acceso a la API de Meta (acceso personal, una app nueva, la app existente conectada como activo del Business, revisión de roles). Las cuatro chocaron con el mismo bloqueo: la app estaba en "Modo Desarrollo" y necesitaba una revisión formal de Meta ("Acceso avanzado") que podía tardar semanas, porque la cuenta publicitaria no era 100% propiedad del dueño de la app — una limitación estructural de la política de Meta, no un error de configuración.
 
