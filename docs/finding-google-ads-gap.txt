@@ -1,0 +1,3 @@
+Finding: missing data in google_ads_campanas
+
+While verifying the date coverage of the three sources in BigQuery, I found that the `google_ads_campanas` table had 4 days with no records at all (June 14-17, 2026), while Tiendanube and Meta Ads did cover those same days. Instead of assuming it was a pipeline bug, I investigated it with a debug script that queried the GA4 Data API directly for that specific date range. The result confirmed "0 rows found" — meaning those days genuinely had no spend, clicks, or impressions recorded on the Google Ads account; it wasn't a loading error. Since the pipeline pulls a rolling 90-day window, that gap "aged out" of the window on its own over time: today the coverage already shows 90/90 days with no gaps.

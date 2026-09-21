@@ -1,4 +1,4 @@
-🇦🇷 [Leer en español](README.es.md)
+[Leer en español](README.es.md)
 
 # Denim West — Analytics Pipeline
 
@@ -18,31 +18,31 @@ A pipeline that brings all three sources into the same Data Warehouse every day,
 
 ```mermaid
 flowchart LR
-    A[Tiendanube API] -->|daily, GitHub Actions| D[(BigQuery<br/>denim_west_analytics)]
-    B[GA4 Data API<br/>Google Ads cost] -->|daily, GitHub Actions| D
-    C[Meta Ads Manager<br/>manual CSV export] -->|manual, as needed| D
-    D --> E[Power BI<br/>Dashboard]
+ A[Tiendanube API] -->|daily, GitHub Actions| D[(BigQuery<br/>denim_west_analytics)]
+ B[GA4 Data API<br/>Google Ads cost] -->|daily, GitHub Actions| D
+ C[Meta Ads Manager<br/>manual CSV export] -->|manual, as needed| D
+ D --> E[Power BI<br/>Dashboard]
 ```
 
 ---
 
 ## The three sources, and why each one was solved differently
 
-### 1. Tiendanube (sales) —  100% automated
+### 1. Tiendanube (sales) — 100% automated
 
 Pulls the last 90 days of orders via the API, with pagination, and loads to BigQuery every day with no manual intervention. The most interesting part isn't the script itself, but the app registration: Tiendanube offers two paths ("Custom Apps" and standard OAuth) and the first wasn't available on the store's plan — the full OAuth flow had to be worked out by hand, exchanging the authorization code for a permanent token via `curl` in PowerShell.
 
-### 2. Google Ads —  100% automated (but not via the obvious path)
+### 2. Google Ads — 100% automated (but not via the obvious path)
 
 **Initial attempt:** connect directly to the Google Ads API. The full OAuth flow was built (developer token, client id/secret, refresh token) and, once the code was working, the problem appeared: the Manager account it pointed to had been **deactivated**. The real active account had a different ID.
 
-**Actual solution:** instead of chasing a fix for that account, the fact that the GA4 property already had cost-import linked to Google Ads was leveraged instead. The GA4 Data API exposes the same metrics (cost, clicks, impressions) without any of the Manager account issues. The discarded script was kept in the repo (`scripts/google_ads_extraccion.py`) as a record of that decision.
+**Actual solution:** instead of chasing a fix for that account, the fact that the GA4 property already had cost-import linked to Google Ads was leveraged instead. The GA4 Data API exposes the same metrics (cost, clicks, impressions) without any of the Manager account issues. The discarded script was kept in the repo (`scripts/google_ads_extraction.py`) as a record of that decision.
 
-### 3. Meta Ads —  the only manual source, and for a real reason
+### 3. Meta Ads — the only manual source, and for a real reason
 
 Four different paths to Meta's API were tried (personal access, a new app, the existing app connected as a Business asset, reviewing app roles). All four hit the same wall: the app was in "Development Mode" and needed a formal Meta review ("Advanced Access") that could take weeks, because the ad account wasn't 100% owned by the app's owner — a structural limitation of Meta's policy, not a configuration error.
 
-**Decision:** manual CSV upload, exported directly from Meta Ads Manager. The script (`scripts/cargar_meta_ads_csv.py`) automatically finds the most recent export in the Downloads folder, so the only real manual step is "export the CSV" — everything else stays automated.
+**Decision:** manual CSV upload, exported directly from Meta Ads Manager. The script (`scripts/load_meta_ads_csv.py`) automatically finds the most recent export in the Downloads folder, so the only real manual step is "export the CSV" — everything else stays automated.
 
 ---
 
@@ -56,7 +56,7 @@ It's not enough for the pipeline to run — the data has to be confirmed correct
 - Compare date coverage across the three sources with a `UNION ALL` query
 - Confirm the column schema of each table with `INFORMATION_SCHEMA`
 
-One specific finding is worth calling out: a 4-day gap with no data was detected in the Google Ads table. Instead of assuming it was a bug, it was investigated with a debug script querying the GA4 API directly — the result confirmed those days had no real spend, not a pipeline error. Full detail in `docs/hallazgo-google-ads.txt`.
+One specific finding is worth calling out: a 4-day gap with no data was detected in the Google Ads table. Instead of assuming it was a bug, it was investigated with a debug script querying the GA4 API directly — the result confirmed those days had no real spend, not a pipeline error. Full detail in `docs/finding-google-ads-gap.txt`.
 
 ## Dashboard (Power BI)
 
@@ -88,4 +88,4 @@ Each script expects its credentials as environment variables (see the `os.getenv
 
 Built end-to-end — from registering the app on Tiendanube to the final dashboard — as a data analyst / performance analyst, applying the same approach I use in my day-to-day work. The discarded paths (the old Google Ads script, the 4 failed attempts with the Meta API) were deliberately kept documented: they reflect the real process of solving problems with data, not just the final result.
 
-**Jesús González** — [LinkedIn](https://www.linkedin.com/in/jes%C3%BAs-gonz%C3%A1lez-arteaga/) · [Portfolio](https://www.linkedin.com/safety/go/?url=https%3A%2F%2Fslender-pudding-6db.notion.site%2FData-Analytics-E-commerce-Growth-Portfolio-Jes-s-Gonz-lez-2b2537b01ef9806fb8dac6165ff2745d&urlhash=kaN9&mt=sLf7zXUwSPMxYM6peUgI_o_Zfa8bLUM9aJn5PdUqsrlkDO7b7tDKN310GdJIvwJPN_YdUAPuBfu1AYXPesE2OY7gXuA&isSdui=true&lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3BUEZAsEN3S0KUFq%2FKSwgcoQ%3D%3D)
+**Jesús González** — [LinkedIn](https://www.linkedin.com/in/jes%C3%BAs-gonz%C3%A1lez-arteaga/) · [Portfolio](https://slender-pudding-6db.notion.site/Data-Analytics-E-commerce-Growth-Portfolio-Jes-s-Gonz-lez-2b2537b01ef9806fb8dac6165ff2745d)

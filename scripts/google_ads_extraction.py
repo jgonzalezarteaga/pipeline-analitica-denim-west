@@ -5,8 +5,8 @@ from google.ads.googleads.client import GoogleAdsClient
 
 load_dotenv()
 
-CUSTOMER_ID = "6726431917"        # tu cuenta real, sin guiones
-LOGIN_CUSTOMER_ID = "4413790396"  # tu cuenta Manager, sin guiones
+CUSTOMER_ID = "6726431917"        # real account, no dashes
+LOGIN_CUSTOMER_ID = "4413790396"  # Manager account, no dashes
 
 config = {
     "developer_token": os.getenv("GOOGLE_ADS_DEVELOPER_TOKEN"),
@@ -20,8 +20,8 @@ config = {
 client = GoogleAdsClient.load_from_dict(config)
 ga_service = client.get_service("GoogleAdsService")
 
-hoy = date.today()
-hace_90_dias = hoy - timedelta(days=90)
+today = date.today()
+ninety_days_ago = today - timedelta(days=90)
 
 query = f"""
     SELECT
@@ -33,24 +33,24 @@ query = f"""
         metrics.cost_micros,
         metrics.conversions
     FROM campaign
-    WHERE segments.date BETWEEN '{hace_90_dias}' AND '{hoy}'
+    WHERE segments.date BETWEEN '{ninety_days_ago}' AND '{today}'
 """
 
 response = ga_service.search_stream(customer_id=CUSTOMER_ID, query=query)
 
-filas = []
+rows = []
 for batch in response:
     for row in batch.results:
-        filas.append({
+        rows.append({
             "campaign_id": row.campaign.id,
             "campaign_name": row.campaign.name,
-            "fecha": row.segments.date,
-            "impresiones": row.metrics.impressions,
-            "clics": row.metrics.clicks,
-            "costo": row.metrics.cost_micros / 1_000_000,
-            "conversiones": row.metrics.conversions,
+            "date": row.segments.date,
+            "impressions": row.metrics.impressions,
+            "clicks": row.metrics.clicks,
+            "cost": row.metrics.cost_micros / 1_000_000,
+            "conversions": row.metrics.conversions,
         })
 
-print(f"Filas traídas: {len(filas)}")
-if filas:
-    print(filas[0])
+print(f"Rows fetched: {len(rows)}")
+if rows:
+    print(rows[0])

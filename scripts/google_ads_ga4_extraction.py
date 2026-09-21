@@ -21,23 +21,25 @@ request = RunReportRequest(
 
 response = ga_client.run_report(request)
 
-filas = []
+rows = []
 for row in response.rows:
-    fecha_raw = row.dimension_values[0].value  # formato "20260715"
-    fecha = datetime.strptime(fecha_raw, "%Y%m%d").strftime("%Y-%m-%d")
-    filas.append({
-        "fecha": fecha,
+    raw_date = row.dimension_values[0].value  # format "20260715"
+    date = datetime.strptime(raw_date, "%Y%m%d").strftime("%Y-%m-%d")
+    # Column names match the live BigQuery table schema
+    # (denim_west_analytics.google_ads_campanas) — kept in Spanish
+    rows.append({
+        "fecha": date,
         "campania": row.dimension_values[1].value,
         "costo": float(row.metric_values[0].value),
         "clics": int(row.metric_values[1].value),
         "impresiones": int(row.metric_values[2].value),
     })
 
-print(f"Filas traídas de GA4: {len(filas)}")
+print(f"Rows fetched from GA4: {len(rows)}")
 
 bq_client = bigquery.Client.from_service_account_json("gcp-credentials.json")
 job_config = bigquery.LoadJobConfig(write_disposition="WRITE_TRUNCATE")
-job = bq_client.load_table_from_json(filas, TABLE_ID, job_config=job_config)
+job = bq_client.load_table_from_json(rows, TABLE_ID, job_config=job_config)
 job.result()
 
-print(f"Listo: {len(filas)} filas cargadas en {TABLE_ID}")
+print(f"Done: {len(rows)} rows loaded into {TABLE_ID}")

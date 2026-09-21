@@ -6,25 +6,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  extraer-pedidos:
+  extract-orders:
     runs-on: ubuntu-latest
     steps:
-      - name: Clonar el repositorio
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configurar Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
-      - name: Instalar dependencias
+      - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Crear archivo de credenciales de Google Cloud
+      - name: Create Google Cloud credentials file
         run: echo '${{ secrets.GCP_CREDENTIALS_JSON }}' > gcp-credentials.json
 
-      - name: Correr el script
+      - name: Run the script
         env:
           TIENDANUBE_ACCESS_TOKEN: ${{ secrets.TIENDANUBE_ACCESS_TOKEN }}
           TIENDANUBE_STORE_ID: ${{ secrets.TIENDANUBE_STORE_ID }}
-        run: python tiendanube_extraccion.py
+        run: python scripts/tiendanube_extraction.py
