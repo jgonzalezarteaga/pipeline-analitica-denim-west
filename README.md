@@ -88,4 +88,4 @@ Each script expects its credentials as environment variables (see the `os.getenv
 
 Built end-to-end — from registering the app on Tiendanube to the final dashboard — as a data analyst / performance analyst, applying the same approach I use in my day-to-day work. The discarded paths (the old Google Ads script, the 4 failed attempts with the Meta API) were deliberately kept documented: they reflect the real process of solving problems with data, not just the final result.
 
-**Jesús González** — [LinkedIn](#) · [Portfolio](#)
+**Jesús González** — [LinkedIn](https://www.linkedin.com/in/jes%C3%BAs-gonz%C3%A1lez-arteaga/) · [Portfolio](https://www.linkedin.com/safety/go/?url=https%3A%2F%2Fslender-pudding-6db.notion.site%2FData-Analytics-E-commerce-Growth-Portfolio-Jes-s-Gonz-lez-2b2537b01ef9806fb8dac6165ff2745d&urlhash=kaN9&mt=sLf7zXUwSPMxYM6peUgI_o_Zfa8bLUM9aJn5PdUqsrlkDO7b7tDKN310GdJIvwJPN_YdUAPuBfu1AYXPesE2OY7gXuA&isSdui=true&lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3BUEZAsEN3S0KUFq%2FKSwgcoQ%3D%3D)
