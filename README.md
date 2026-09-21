@@ -28,17 +28,17 @@ flowchart LR
 
 ## The three sources, and why each one was solved differently
 
-### 1. Tiendanube (sales) — ✅ 100% automated
+### 1. Tiendanube (sales) —  100% automated
 
 Pulls the last 90 days of orders via the API, with pagination, and loads to BigQuery every day with no manual intervention. The most interesting part isn't the script itself, but the app registration: Tiendanube offers two paths ("Custom Apps" and standard OAuth) and the first wasn't available on the store's plan — the full OAuth flow had to be worked out by hand, exchanging the authorization code for a permanent token via `curl` in PowerShell.
 
-### 2. Google Ads — ✅ 100% automated (but not via the obvious path)
+### 2. Google Ads —  100% automated (but not via the obvious path)
 
 **Initial attempt:** connect directly to the Google Ads API. The full OAuth flow was built (developer token, client id/secret, refresh token) and, once the code was working, the problem appeared: the Manager account it pointed to had been **deactivated**. The real active account had a different ID.
 
 **Actual solution:** instead of chasing a fix for that account, the fact that the GA4 property already had cost-import linked to Google Ads was leveraged instead. The GA4 Data API exposes the same metrics (cost, clicks, impressions) without any of the Manager account issues. The discarded script was kept in the repo (`scripts/google_ads_extraccion.py`) as a record of that decision.
 
-### 3. Meta Ads — ⚠️ the only manual source, and for a real reason
+### 3. Meta Ads —  the only manual source, and for a real reason
 
 Four different paths to Meta's API were tried (personal access, a new app, the existing app connected as a Business asset, reviewing app roles). All four hit the same wall: the app was in "Development Mode" and needed a formal Meta review ("Advanced Access") that could take weeks, because the ad account wasn't 100% owned by the app's owner — a structural limitation of Meta's policy, not a configuration error.
 
